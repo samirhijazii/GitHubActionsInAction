@@ -1,0 +1,29 @@
+name: Docker Build Check
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+    docker-build:
+        name: build Docker Image
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: checkout repository
+              uses: actions/checkout@v4
+
+            - name: Docker Setup Buildx
+              run: docker/setup-buildx-action@v3.12.0
+
+            - name: Build Docker image (production stage)
+              run: |
+                docker build \
+                    --target production \
+                    -t nextjs-app:ci \
+                    -f ./Dockerfile .
